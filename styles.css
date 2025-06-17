@@ -167,7 +167,7 @@
 		}
 
 		#home {
-        background-image: url('DSCF0818.jpg');
+        background-image: <img src="DSCF0818.JPG" alt="white">;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
