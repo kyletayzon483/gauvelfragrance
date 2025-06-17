@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Gauvel</title>
+
+	<!-- Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+	<!-- Styles -->
+	<link rel="stylesheet" href="styles.css" />
+
+	<!-- JS (defer ensures it runs after HTML is parsed) -->
+	<script src="script.js" defer></script>
+</head>
+<body>
+	<!-- Navigation -->
+	<nav class="navbar">
+		<div class="navbar__container">
+			<a href="#home" class="navbar__logo uppercase">GAUVEL</a>
+			<ul class="navbar__menu">
+				<li><a href="#home" class="navbar__links uppercase">Home</a></li>
+				<li><a href="products.html" class="navbar__links uppercase">Fragrances</a></li>
+				<li><a href="contact.html" class="navbar__links uppercase">Contact</a></li>
+			</ul>
+			<div class="navbar__actions">
+				<a href="signup.html" class="auth-button uppercase">Sign In/Sign Up</a>
+				<button id="cartButton" class="cart-button" onclick="openCart()">
+					<img src="cart.png" alt="cart" />
+					<span id="cartCount" class="cart-count">0</span>
+				</button>
+			</div>
+		</div>
+	</nav>
+
+	<div id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-panel">
+	<h2 class="cart-title">Shopping Cart</h2>
+	<div class="cart-content"></div>
+	<div class="cart-actions">
+		<button class="checkout-btn-mini">CHECKOUT</button>
+	</div>
+	<button class="cart-close-btn" onclick="closeCart()">×</button>
+</div>
+
+
+	<!-- Home Section -->
+	<section id="home" class="hero">
+		<div class="hero__content">
+			<p class="hero__subtitle uppercase mono">EST. 2022</p>
+			<h1 class="hero__title">GAUVEL</h1>
+			<p class="hero__description">
+				A perfume brand that is inspired by<br />
+				philosophy, craftsmanship, and exclusivity.
+			</p>
+		</div>
+	</section>
+
+	<!-- About Section -->
+	<section id="about" class="about">
+		<div class="section-container">
+			<div class="about__content">
+				<div class="about__text">
+					<p class="about__subtitle uppercase mono">PHILOSOPHY</p>
+					<h2 class="about__title">SLOW PERFUMERY</h2>
+					<p class="about__description">
+						We believe in taking time. Time to source the finest raw materials, time to blend with
+						precision, time to let each fragrance mature and develop its character.
+					</p>
+					<p class="about__description">
+						Our laboratory approach to perfumery combines traditional craftsmanship with modern innovation,
+						creating fragrances that are both timeless and contemporary.
+					</p>
+				</div>
+				<div class="about__manifesto">
+					<h3 class="manifesto__title uppercase mono">OUR MANIFESTO</h3>
+					<p class="manifesto__text">
+						"We are not interested in creating the next bestseller. We are interested in creating
+						fragrances that speak to the soul, that become part of your story, that age with you and
+						become more beautiful with time. Each bottle is a piece of art, each scent a poem, each
+						wearing a moment of truth."
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
