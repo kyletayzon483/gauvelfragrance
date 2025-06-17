@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login/Signup</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="styles.css" /> 
-    <script src="script.js" defer></script> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login/Signup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+
 <style>
     * {
         margin: 0;
@@ -307,7 +307,7 @@
 
         <div id="signin" class="form-section active">
             <h2>Welcome Back</h2>
-            <form>
+            <form id="signin-form">
                 <div class="form-group">
                     <label for="signin-email">Email</label>
                     <input type="email" id="signin-email" name="email" required>
@@ -322,7 +322,7 @@
 
         <div id="signup" class="form-section">
             <h2>Create Account</h2>
-            <form class="signup-form">
+            <form id="signup-form"class="signup-form">
                 <div class="form-columns">
                     <div class="form-column">
                         <div class="form-group">
@@ -442,6 +442,8 @@
             const districtSelect = document.getElementById('district');
             const barangaySelect = document.getElementById('barangay');
 
+            provinceSelect.innerHTML = '<option value="N/A" selected>N/A</option>';
+            provinceSelect.required = false;
             provinceSelect.innerHTML = '<option value="">Select Province</option>';
             districtSelect.innerHTML = '<option value="">Select City/Municipality</option>';
             barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
@@ -511,60 +513,135 @@
             }
         }
 
-        // Handle form submissions (no PHP/AJAX)
+        
+
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Philippine address dropdowns
-            populateRegions();
+    // Initialize address dropdowns
+    populateRegions();
 
-            const signupForm = document.querySelector('#signup form');
-            const signinForm = document.querySelector('#signin form');
+    // Dropdown listeners
+    document.getElementById('region').addEventListener('change', function () {
+      const regionCode = this.value;
+      if (regionCode) {
+        populateProvinces(regionCode);
+      } else {
+        resetDropdowns(['province', 'district', 'barangay']);
+      }
+    });
 
-            signupForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData.entries());
-                console.log("Sign up data:", data);
-                showPopup("Account created successfully", "success");
-                setTimeout(() => this.reset(), 500);
-            });
+    document.getElementById('province').addEventListener('change', function () {
+      const provinceCode = this.value;
+      if (provinceCode) {
+        populateMunicipalities(provinceCode);
+      } else {
+        resetDropdowns(['district', 'barangay']);
+      }
+    });
 
-            signinForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData.entries());
-                console.log("Sign in data:", data);
-                showPopup("Welcome back", "success");
-                setTimeout(() => this.reset(), 500);
-            });
-        });
+    document.getElementById('district').addEventListener('change', function () {
+      const municipalityCode = this.value;
+      if (municipalityCode) {
+        populateBarangays(municipalityCode);
+      } else {
+        resetDropdowns(['barangay']);
+      }
+    });
 
-        // Handle location cascading
-        document.getElementById('region').addEventListener('change', function() {
-            if (this.value) {
-                populateProvinces(this.value);
-            } else {
-                document.getElementById('province').innerHTML = '<option value="">Select Province</option>';
-                document.getElementById('district').innerHTML = '<option value="">Select City/Municipality</option>';
-                document.getElementById('barangay').innerHTML = '<option value="">Select Barangay</option>';
-            }
-        });
+    function resetDropdowns(ids) {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<option value="">Select ${capitalize(id)}</option>`;
+      });
+    }
 
-        document.getElementById('province').addEventListener('change', function() {
-            if (this.value) {
-                populateMunicipalities(this.value);
-            } else {
-                document.getElementById('district').innerHTML = '<option value="">Select City/Municipality</option>';
-                document.getElementById('barangay').innerHTML = '<option value="">Select Barangay</option>';
-            }
-        });
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+  });
+</script>
 
-        document.getElementById('district').addEventListener('change', function() {
-            if (this.value) {
-                populateBarangays(this.value);
-            } else {
-                document.getElementById('barangay').innerHTML = '<option value="">Select Barangay</option>';
-            }
-        });
-    </script>
+
+
+
+    <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // ✅ Initialize Firebase
+  const firebaseConfig = {
+  apiKey: "AIzaSyD9aQYJduGX-IBnCGvxYBQHCrZH05GAhoY",
+  authDomain: "gauvelfragrance-80197.firebaseapp.com",
+  projectId: "gauvelfragrance-80197",
+  storageBucket: "gauvelfragrance-80197.firebasestorage.app",
+  messagingSenderId: "116770427568",
+  appId: "1:116770427568:web:16373de8c306a1b771e175",
+  measurementId: "G-EG12NGJSYS"
+
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // ✅ Wait for DOM before accessing forms
+  document.addEventListener('DOMContentLoaded', () => {
+    const signupForm = document.querySelector('#signup-form');
+    const signinForm = document.querySelector('#signin-form');
+
+    if (signupForm) {
+      signupForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+          const userCredential = await auth.createUserWithEmailAndPassword(data.email, data.password);
+          const user = userCredential.user;
+
+          await db.collection("users").doc(user.uid).set({
+            name: data.name,
+            email: data.email,
+            street: data.street,
+            zip: data.zip,
+            region: data.region,
+            province: data.province,
+            municipality: data.municipality,
+            barangay: data.barangay,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+
+          showPopup("Account Created Successfully", "success");
+          this.reset();
+        } catch (error) {
+          console.error("Signup Error:");
+          showPopup("Signup failed ","error");
+        }
+      });
+    }
+
+    if (signinForm) {
+      signinForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        if (data.province === "N/A") {
+  data.province = ""; // or keep it as "N/A" if that's your DB preference
+}
+
+        try {
+          await auth.signInWithEmailAndPassword(data.email, data.password);
+          showPopup("Login Successful", "success");
+          this.reset();
+        } catch (error) {
+          console.error("Signin Error");
+          showPopup("Sign in failed" , "error");
+        }
+      });
+    }
+  });
+</script>
 </body>
 </html>
